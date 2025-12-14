@@ -1,11 +1,15 @@
 package com.example.modulex.domain;
 
-import org.springframework.context.ApplicationEvent;
+public class UserCreated {
 
-public class UserCreated extends ApplicationEvent{
+    private final String source;
 
-    public UserCreated(Object source) {
-        super(source);
+    public UserCreated(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
     }
 
 }

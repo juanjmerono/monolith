@@ -1,15 +1,15 @@
-package com.example.modulex.domain;
+package com.example.moduley.notifications.domain;
 
-public class UserCreated {
+public class NotificationSent {
 
     private final String source;
 
-    public UserCreated(String source) {
+    public NotificationSent(String source) {
         this.source = source;
     }
 
     public String getSource() {
         return source;
     }
-
+    
 }

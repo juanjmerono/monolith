@@ -2,6 +2,7 @@ package com.example.modulex.service;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.modulex.domain.UserCreated;
 
@@ -19,6 +20,7 @@ public class UsersService {
         return "{ userId: " + id + " }";
     }
 
+    @Transactional
     public void newUser(String userData) {
         // Logic to create a new user
         events.publishEvent(new UserCreated(userData));

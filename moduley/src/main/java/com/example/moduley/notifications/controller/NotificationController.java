@@ -1,8 +1,4 @@
-package com.example.modulex.controller;
-
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.modulex.service.UsersService;
+package com.example.moduley.notifications.controller;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,17 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.moduley.notifications.service.NotificationService;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
-@RequestMapping("/user")
-public class UsersRestController {
+@RequestMapping("/notification")
+public class NotificationController {
+
+    private final NotificationService notificationService;
 
     @Value("${spring.datasource.url}")
     private String URL;
@@ -34,26 +33,10 @@ public class UsersRestController {
     @Value("${spring.datasource.password}")
     private String PASSWORD;
 
-    private final UsersService usersService;
-
-    public UsersRestController(UsersService usersService) {
-        this.usersService = usersService;
-    }
-
-    // Endpoint get user
-    @GetMapping("/{id}")
-    public String getUser(@PathVariable String id) {
-        return usersService.getUserById(id);
-    }
-
-    @PostMapping("/")
-    @ResponseStatus(HttpStatus.CREATED)
-    public String postUser(@RequestBody String entity) {
-        usersService.newUser(entity);   
-        return entity;
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
     
-
     /*
     create table event_publication (
         id uuid not null,
@@ -69,7 +52,7 @@ public class UsersRestController {
     public List<Map<String, Object>> getEvents() {
         List<Map<String, Object>> events = new ArrayList<>();
 
-        String sql = "SELECT id, status, completion_attempts, last_resubmission_date, publication_date, event_type, completion_date FROM event_publication";
+        String sql = "SELECT id, status, completion_attempts, last_resubmission_date, publication_date, event_type FROM event_publication";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -83,7 +66,6 @@ public class UsersRestController {
                 row.put("last_resubmission_date", rs.getTimestamp("last_resubmission_date"));
                 row.put("publication_date", rs.getTimestamp("publication_date"));
                 row.put("event_type", rs.getString("event_type"));
-                row.put("completion_date", rs.getTimestamp("completion_date"));
                 events.add(row);
             }
 
@@ -92,6 +74,12 @@ public class UsersRestController {
         }
 
         return events;
+    }
+
+    @GetMapping("/send")
+    public String getSend() {
+        notificationService.newNotification("Example");
+        return "Send Notification OK";
     }
     
 
