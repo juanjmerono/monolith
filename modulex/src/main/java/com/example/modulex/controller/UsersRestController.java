@@ -69,21 +69,18 @@ public class UsersRestController {
     public List<Map<String, Object>> getEvents() {
         List<Map<String, Object>> events = new ArrayList<>();
 
-        String sql = "SELECT id, status, completion_attempts, last_resubmission_date, publication_date, event_type, completion_date FROM event_publication";
+        String sql = "SELECT * FROM event_publication";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()) {
-
+            int len = rs.getMetaData().getColumnCount();
             while (rs.next()) {
                 Map<String, Object> row = new HashMap<>();
-                row.put("id", rs.getString("id"));
-                row.put("status", rs.getString("status"));
-                row.put("completion_attempts", rs.getInt("completion_attempts"));
-                row.put("last_resubmission_date", rs.getTimestamp("last_resubmission_date"));
-                row.put("publication_date", rs.getTimestamp("publication_date"));
-                row.put("event_type", rs.getString("event_type"));
-                row.put("completion_date", rs.getTimestamp("completion_date"));
+                for (int i = 1; i <= len; i++) {
+                    String columnName = rs.getMetaData().getColumnName(i);
+                    row.put(columnName, rs.getObject(columnName));
+                }
                 events.add(row);
             }
 

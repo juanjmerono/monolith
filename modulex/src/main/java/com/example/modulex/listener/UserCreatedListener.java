@@ -6,11 +6,11 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.example.modulex.domain.UserCreated;
 
-@Component
+//@Component
 public class UserCreatedListener {
 
-    @Async
-    @TransactionalEventListener
+    //@Async
+    //@TransactionalEventListener
     public void onApplicationEvent(UserCreated event) {
         System.out.println("UserCreated event received: " + event.getSource());
     }
